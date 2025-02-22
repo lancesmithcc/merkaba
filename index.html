@@ -25,6 +25,14 @@
       position: relative;
       background: url('space.jpeg') center center no-repeat fixed;
       background-size: cover;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) min-content;
+      grid-template-rows: minmax(0, 1fr) auto;
+      height: 100vh;
+      width: 100vw;
+      gap: 10px;
+      padding: 10px;
+      box-sizing: border-box;
     }
 
     /* Add pseudo-element for overlay */
@@ -37,47 +45,85 @@
       height: 100%;
       background-color: rgba(0, 0, 0, 0.8);
       z-index: 0;
+      pointer-events: none;
     }
 
-    /* Ensure SVG and controls stay above overlay */
-    #svg {
-      position: absolute;
-      width: calc(100vw - 50px);
-      height: 100vh;
-      top: 0;
-      left: 0;
+    /* Container for the animation */
+    #animationContainer {
+      grid-column: 1;
+      grid-row: 1;
+      position: relative;
       z-index: 1;
+      overflow: hidden;
+      
+      aspect-ratio: 1;
+      margin: auto;
+      width: min(98vh, 98%, 1200px);
+      height: min(98vh, 98%, 1200px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5%;
+      box-sizing: border-box;
     }
+
+    /* Ensure SVG stays within its container */
+    #svg {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: block;
+      touch-action: none;
+    }
+
+    /* Speed slider container */
     #speedContainer {
-      position: fixed;
-      top: 0;
-      right: 0;
+      grid-column: 2;
+      grid-row: 1 / -1;
+      position: relative;
       width: 50px;
-      height: 100vh;
       font-family: 'Poppins', sans-serif;
       text-align: center;
-      background: rgba(0, 0, 0, 0.7);
       padding: 0;
       z-index: 2;
       display: flex;
       flex-direction: column;
       justify-content: center;
+      filter:grayscale(100%);
       align-items: center;
-      border-left: 1px solid rgba(255, 255, 255, 0.1);
       overflow: visible;
+      touch-action: none;
+      height: 100%;
+      margin: 0;
     }
+
+    /* Bottom controls container */
+    #bottomControls {
+      grid-column: 1;
+      grid-row: 2;
+      height: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 15px;
+      padding: 8px;
+      z-index: 2;
+      border-radius: 8px;
+    }
+
     #speed {
-      width: 100vh;
+      width: calc(100vh - 20px);
       margin: 0;
       background: #363636;
       height: 4px;
       border-radius: 5px;
       position: absolute;
       transform-origin: right center;
-      transform: rotate(-90deg) translateX(50vh);
+      transform: rotate(-90deg) translateX(50%);
       right: 23px;
       top: 50%;
       touch-action: none;
+      padding: 0;
     }
     #speed::-webkit-slider-thumb {
       -webkit-appearance: none;
@@ -98,66 +144,41 @@
     }
     .slider-markers {
       position: absolute;
-      width: 100vh;
-      height: 30px;
+      width: calc(100vh - 20px);
+      height: 16px;
       right: 23px;
       top: 50%;
       transform-origin: right center;
-      transform: rotate(-90deg) translateX(50vh);
+      transform: rotate(-90deg) translateX(50%);
       pointer-events: none;
     }
     .marker {
       position: absolute;
       width: 2px;
-      height: 8px;
+      height: 16px;
       background: rgba(107, 107, 107, 0.8);
       transform: translateX(-50%);
     }
-    .marker::after {
-      content: attr(data-value);
-      position: absolute;
-      top: -20px;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: 10px;
-      font-family: 'Poppins', sans-serif;
-      font-weight: 500;
-      color: rgba(97, 96, 96, 0.9);
-      background: rgba(0, 0, 0, 0.7);
-      padding: 2px 4px;
-      border-radius: 3px;
-      white-space: nowrap;
-    }
     #speedValue {
-      font-size: 14px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 10px;
       font-weight: 500;
       text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
-      margin: 20px;
-      padding: 15px;
+      padding: 10px;
       display: flex;
       flex-direction: column;
-      gap: 5px;
+      gap: 3px;
       height: auto;
       white-space: nowrap;
-      position: absolute;
-      right: 55px;
-      bottom: 44px;
-      pointer-events: none;
-      background: rgba(0, 0, 0, 0.8);
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      border-radius: 8px;
       color: rgb(88, 88, 88) !important;
-      transform: none;
-      writing-mode: horizontal-tb;
-      box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(3px);
-      min-width: 233px;
+      min-width: 220px;
       text-align: center;
+      order: 2;
     }
 
     #speedValue::before {
       content: 'VELOCITY RELATIVE TO LIGHTSPEED';
-      font-size: 8px;
+      font-size: 10px;
       letter-spacing: 1px;
       opacity: 0.7;
       font-weight: 400;
@@ -165,20 +186,15 @@
     }
 
     #currentFib {
-      position: absolute;
-      right: 77px;
-      bottom: 144px;
-      font-size: 24px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 22px;
       font-weight: 500;
       color: white;
-      background: rgba(20, 20, 20, 0.8);
-      padding: 10px 15px;
-      border-radius: 8px;
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(3px);
-      min-width: 233px;
+
+      padding: 8px 12px;
+      min-width: 144px;
       text-align: center;
+      order: 1;
     }
     label[for="speed"] {
       font-size: 12px;
@@ -194,13 +210,43 @@
       top: 10px;
       pointer-events: none;
     }
+
+    /* Media query for mobile devices */
+    @media screen and (max-width: 768px) {
+      #bottomControls {
+        height: 120px;
+        flex-direction: column;
+        padding: 8px;
+        gap: 8px;
+      }
+    }
+
+    /* Media query for very small devices */
+    @media screen and (max-width: 360px) {
+      #bottomControls {
+        height: 120px;
+      }
+    }
+
+    /* Media query for landscape orientation on mobile */
+    @media screen and (max-height: 500px) and (orientation: landscape) {
+      #bottomControls {
+        height: 60px;
+        flex-direction: row;
+        padding: 5px;
+      }
+    }
   </style>
 </head>
 <body>
-  <svg id="svg" viewBox="-300 -300 600 600"></svg>
+  <div id="animationContainer">
+    <svg id="svg" viewBox="-300 -300 600 600"></svg>
+  </div>
   <div id="speedContainer">
     <input type="range" id="speed" min="0" max="144" value="0">
     <div class="slider-markers"></div>
+  </div>
+  <div id="bottomControls">
     <div id="currentFib">0</div>
     <div id="speedValue">v = 0% c | γ = 1.00</div>
   </div>
@@ -542,11 +588,10 @@
     document.addEventListener('mousemove', (e) => {
       if (!isDragging) return;
       
-      const sliderRect = slider.getBoundingClientRect();
       const containerRect = document.getElementById('speedContainer').getBoundingClientRect();
       
       // Calculate relative position in the rotated space
-      const relativeY = (containerRect.bottom - e.clientY) / containerRect.height;
+      const relativeY = (containerRect.bottom - e.clientY) / (containerRect.height - 20);
       const value = Math.max(0, Math.min(144, relativeY * 144));
       
       slider.value = value;
@@ -589,11 +634,10 @@
       if (!isDragging) return;
       
       const touch = e.touches[0];
-      const sliderRect = slider.getBoundingClientRect();
       const containerRect = document.getElementById('speedContainer').getBoundingClientRect();
       
       // Calculate relative position in the rotated space
-      const relativeY = (containerRect.bottom - touch.clientY) / containerRect.height;
+      const relativeY = (containerRect.bottom - touch.clientY) / (containerRect.height - 20);
       const value = Math.max(0, Math.min(144, relativeY * 144));
       
       slider.value = value;
@@ -645,6 +689,36 @@
         document.getElementById('currentFib').style.opacity = '0.7';
       }
     });
+
+    // Update the SVG viewBox based on screen size
+    function updateSvgViewBox() {
+      const svg = document.getElementById('svg');
+      
+      // Use maxRadius (250) as the base for calculations
+      const baseSize = maxRadius * 2; // 500
+      const safetyMargin = 1.1; // 10% extra space
+      const totalSize = baseSize * safetyMargin; // 550
+      
+      // Set the viewBox to ensure the animation fits with padding
+      svg.setAttribute('viewBox', `-${totalSize/2} -${totalSize/2} ${totalSize} ${totalSize}`);
+    }
+
+    // Call on load and resize
+    window.addEventListener('load', updateSvgViewBox);
+    window.addEventListener('resize', updateSvgViewBox);
+
+    // Also update when orientation changes
+    window.addEventListener('orientationchange', () => {
+      // Small delay to ensure new dimensions are available
+      setTimeout(updateSvgViewBox, 100);
+    });
+    
+    // Prevent default touch behaviors that might interfere with the animation
+    document.addEventListener('touchmove', function(e) {
+      if (e.target.id === 'svg' || e.target.id === 'speedContainer' || e.target.id === 'speed') {
+        e.preventDefault();
+      }
+    }, { passive: false });
   </script>
 </body>
 </html>
