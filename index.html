@@ -84,7 +84,7 @@
       width: 50px;
       font-family: 'Poppins', sans-serif;
       text-align: center;
-      padding: 0;
+      padding: 20px 0;
       z-index: 2;
       display: flex;
       flex-direction: column;
@@ -93,8 +93,9 @@
       align-items: center;
       overflow: visible;
       touch-action: none;
-      height: 100%;
+      height: calc(100% - 40px);
       margin: 0;
+      box-sizing: border-box;
     }
 
     /* Bottom controls container */
@@ -107,12 +108,13 @@
       align-items: center;
       gap: 15px;
       padding: 8px;
+      margin-bottom:30px;
       z-index: 2;
       border-radius: 8px;
     }
 
     #speed {
-      width: calc(100vh - 20px);
+      width: calc(100vh - 60px);
       margin: 0;
       background: #363636;
       height: 4px;
@@ -144,7 +146,7 @@
     }
     .slider-markers {
       position: absolute;
-      width: calc(100vh - 20px);
+      width: calc(100vh - 60px);
       height: 16px;
       right: 23px;
       top: 50%;
@@ -218,6 +220,10 @@
         flex-direction: column;
         padding: 8px;
         gap: 8px;
+        margin-bottom: 40px;
+      }
+      #speedContainer {
+        margin-bottom: 40px;
       }
     }
 
@@ -225,6 +231,10 @@
     @media screen and (max-width: 360px) {
       #bottomControls {
         height: 120px;
+        margin-bottom: 40px;
+      }
+      #speedContainer {
+        margin-bottom: 40px;
       }
     }
 
@@ -234,6 +244,10 @@
         height: 60px;
         flex-direction: row;
         padding: 5px;
+        margin-bottom: 40px;
+      }
+      #speedContainer {
+        margin-bottom: 40px;
       }
     }
   </style>
