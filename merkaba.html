@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spinning Merkaba with Flower of Life</title>
+  
+  <!-- PWA Meta Tags -->
+  <meta name="theme-color" content="#000000">
+  <meta name="description" content="Sacred Geometry Merkaba Meditation with Fibonacci Sequence">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="Merkaba">
+  
+  <!-- PWA Links -->
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+  
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      background-color: black;
+      position: relative;
+      background: url('space.jpeg') center center no-repeat fixed;
+      background-size: cover;
+    }
+
+    /* Add pseudo-element for overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+      z-index: 0;
+    }
+
+    /* Ensure SVG and controls stay above overlay */
+    #svg {
+      position: absolute;
+      width: calc(100vw - 50px);
+      height: 100vh;
+      top: 0;
+      left: 0;
+      z-index: 1;
+    }
+    #speedContainer {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 50px;
+      height: 100vh;
+      font-family: 'Poppins', sans-serif;
+      text-align: center;
+      background: rgba(0, 0, 0, 0.7);
+      padding: 0;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      border-left: 1px solid rgba(255, 255, 255, 0.1);
+      overflow: visible;
+    }
+    #speed {
+      width: 100vh;
+      margin: 0;
+      background: #363636;
+      height: 4px;
+      border-radius: 5px;
+      position: absolute;
+      transform-origin: right center;
+      transform: rotate(-90deg) translateX(50vh);
+      right: 23px;
+      top: 50%;
+      touch-action: none;
+    }
+    #speed::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 16px;
+      height: 16px;
+      background: white;
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    }
+    #speed::-moz-range-thumb {
+      width: 16px;
+      height: 16px;
+      background: white;
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    }
+    .slider-markers {
+      position: absolute;
+      width: 100vh;
+      height: 30px;
+      right: 23px;
+      top: 50%;
+      transform-origin: right center;
+      transform: rotate(-90deg) translateX(50vh);
+      pointer-events: none;
+    }
+    .marker {
+      position: absolute;
+      width: 2px;
+      height: 8px;
+      background: rgba(107, 107, 107, 0.8);
+      transform: translateX(-50%);
+    }
+    .marker::after {
+      content: attr(data-value);
+      position: absolute;
+      top: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 10px;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 500;
+      color: rgba(97, 96, 96, 0.9);
+      background: rgba(0, 0, 0, 0.7);
+      padding: 2px 4px;
+      border-radius: 3px;
+      white-space: nowrap;
+    }
+    #speedValue {
+      font-size: 14px;
+      font-weight: 500;
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+      margin: 20px;
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      height: auto;
+      white-space: nowrap;
+      position: absolute;
+      right: 55px;
+      bottom: 44px;
+      pointer-events: none;
+      background: rgba(0, 0, 0, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 8px;
+      color: rgb(88, 88, 88) !important;
+      transform: none;
+      writing-mode: horizontal-tb;
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(3px);
+      min-width: 233px;
+      text-align: center;
+    }
+
+    #speedValue::before {
+      content: 'VELOCITY RELATIVE TO LIGHTSPEED';
+      font-size: 8px;
+      letter-spacing: 1px;
+      opacity: 0.7;
+      font-weight: 400;
+      margin-bottom: 5px;
+    }
+
+    #currentFib {
+      position: absolute;
+      right: 77px;
+      bottom: 144px;
+      font-size: 24px;
+      font-weight: 500;
+      color: white;
+      background: rgba(20, 20, 20, 0.8);
+      padding: 10px 15px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(3px);
+      min-width: 233px;
+      text-align: center;
+    }
+    label[for="speed"] {
+      font-size: 12px;
+      opacity: 0.9;
+      margin: 10px 0;
+      display: block;
+      writing-mode: vertical-lr;
+      transform: rotate(180deg);
+      height: auto;
+      white-space: nowrap;
+      position: absolute;
+      right: 35px;
+      top: 10px;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <svg id="svg" viewBox="-300 -300 600 600"></svg>
+  <div id="speedContainer">
+    <input type="range" id="speed" min="0" max="144" value="0">
+    <div class="slider-markers"></div>
+    <div id="currentFib">0</div>
+    <div id="speedValue">v = 0% c | γ = 1.00</div>
+  </div>
+  <script>
+    // Service Worker Registration
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then((registration) => {
+            console.log('ServiceWorker registration successful');
+          })
+          .catch((err) => {
+            console.log('ServiceWorker registration failed: ', err);
+          });
+      });
+    }
+
+    const svg = document.getElementById('svg');
+    const r = 50; // Radius of circles for Flower of Life
+    const sqrt3 = Math.sqrt(3);
+    const maxRadius = 250; // Enclosing circle radius
+    const s = 100; // Scaling factor for Merkaba
+    const d = 500; // Perspective distance
+
+    // Create clipPath for the enclosing circle
+    const clipPath = document.createElementNS('http://www.w3.org/2000/svg', 'clipPath');
+    clipPath.setAttribute('id', 'clip-circle');
+    const clipCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    clipCircle.setAttribute('cx', 0);
+    clipCircle.setAttribute('cy', 0);
+    clipCircle.setAttribute('r', maxRadius);
+    clipPath.appendChild(clipCircle);
+    svg.appendChild(clipPath);
+
+    // Draw Flower of Life clipped to the enclosing circle
+    const flowerGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    flowerGroup.setAttribute('clip-path', 'url(#clip-circle)');
+    for (let k = -10; k <= 10; k++) {
+      for (let m = -10; m <= 10; m++) {
+        let x, y;
+        if (k % 2 === 0) {
+          x = m * r;
+        } else {
+          x = (m + 0.5) * r;
+        }
+        y = k * (r * sqrt3 / 2);
+        if (x * x + y * y < maxRadius * maxRadius) {
+          const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+          circle.setAttribute('cx', x);
+          circle.setAttribute('cy', y);
+          circle.setAttribute('r', r);
+          circle.setAttribute('fill', 'none');
+          circle.setAttribute('stroke', 'rgba(0,255,0,0.2)');
+          circle.setAttribute('stroke-width', '1');
+          flowerGroup.appendChild(circle);
+        }
+      }
+    }
+    svg.appendChild(flowerGroup);
+
+    // Draw enclosing circle for Flower of Life
+    const enclosingCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    enclosingCircle.setAttribute('cx', 0);
+    enclosingCircle.setAttribute('cy', 0);
+    enclosingCircle.setAttribute('r', maxRadius);
+    enclosingCircle.setAttribute('fill', 'none');
+    enclosingCircle.setAttribute('stroke', 'green');
+    enclosingCircle.setAttribute('stroke-width', '1');
+    svg.appendChild(enclosingCircle);
+
+    // Draw outer enclosing circle
+    const outerEnclosingCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    outerEnclosingCircle.setAttribute('cx', 0);
+    outerEnclosingCircle.setAttribute('cy', 0);
+    outerEnclosingCircle.setAttribute('r', maxRadius + 13);
+    outerEnclosingCircle.setAttribute('fill', 'none');
+    outerEnclosingCircle.setAttribute('stroke', 'green');
+    outerEnclosingCircle.setAttribute('stroke-width', '1');
+    svg.appendChild(outerEnclosingCircle);
+
+    // Create polygon elements for faces
+    const polygons = [];
+    for (let i = 0; i < 8; i++) {
+      const polygon = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+      polygon.setAttribute('fill', 'none');
+      polygon.setAttribute('stroke', 'green');
+      polygon.setAttribute('stroke-width', '2');
+      svg.appendChild(polygon);
+      polygons.push(polygon);
+    }
+
+    // Add filter for glow effect
+    const filter = document.createElementNS('http://www.w3.org/2000/svg', 'filter');
+    filter.setAttribute('id', 'glow');
+    filter.innerHTML = `
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    `;
+    svg.appendChild(filter);
+
+    // Add medical symbol in the center (last, so it's on top)
+    const medSymbolGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    const medSymbol = document.createElementNS('http://www.w3.org/2000/svg', 'image');
+    medSymbol.setAttributeNS('http://www.w3.org/1999/xlink', 'href', 'med.svg');
+    medSymbol.setAttribute('height', '200');
+    medSymbol.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+    medSymbol.setAttribute('y', '-90');
+    medSymbol.setAttribute('transform', 'translate(7, 0)');
+    medSymbolGroup.appendChild(medSymbol);
+    
+    // Listen for the image load to set x position based on actual width
+    medSymbol.onload = function() {
+      const width = this.getBBox().width;
+      this.setAttribute('x', `-${width/2}`);
+    };
+    
+    svg.appendChild(medSymbolGroup);
+
+    // Define Merkaba (Star Tetrahedron) vertices
+    const vertices = [
+      [s, s, s], [s, -s, -s], [-s, s, -s], [-s, -s, s],  // Tetra1 vertices
+      [-s, -s, -s], [-s, s, s], [s, -s, s], [s, s, -s]   // Tetra2 vertices
+    ];
+
+    // Function to rotate a vector around an axis by a given angle
+    function rotate_vector(p, k, theta) {
+      const cos_theta = Math.cos(theta);
+      const sin_theta = Math.sin(theta);
+      const dot = k[0] * p[0] + k[1] * p[1] + k[2] * p[2];
+      const cross = [
+        k[1] * p[2] - k[2] * p[1],
+        k[2] * p[0] - k[0] * p[2],
+        k[0] * p[1] - k[1] * p[0]
+      ];
+      return [
+        p[0] * cos_theta + cross[0] * sin_theta + k[0] * dot * (1 - cos_theta),
+        p[1] * cos_theta + cross[1] * sin_theta + k[1] * dot * (1 - cos_theta),
+        p[2] * cos_theta + cross[2] * sin_theta + k[2] * dot * (1 - cos_theta)
+      ];
+    }
+
+    // Compute rotation to align [s,s,s] with [0,1,0]
+    const v1 = [1, 1, 1]; // Direction of [s,s,s]
+    const v2 = [0, 1, 0]; // Desired direction (Y-axis)
+    const v1_norm = v1.map(x => x / Math.sqrt(3));
+    const k = [
+      v1_norm[1] * v2[2] - v1_norm[2] * v2[1],
+      v1_norm[2] * v2[0] - v1_norm[0] * v2[2],
+      v1_norm[0] * v2[1] - v1_norm[1] * v2[0]
+    ]; // Cross product
+    const k_norm = k.map(x => x / Math.sqrt(k[0]**2 + k[1]**2 + k[2]**2));
+    const theta = Math.acos(v1_norm[0] * v2[0] + v1_norm[1] * v2[1] + v1_norm[2] * v2[2]);
+
+    // Apply initial rotation to align tetrahedrons along Y-axis
+    const rotatedVertices = vertices.map(v => rotate_vector(v, k_norm, theta));
+
+    // Define faces of the Merkaba
+    const faces = [
+      [0, 1, 2], [0, 1, 3], [0, 2, 3], [1, 2, 3],  // Tetra1 faces
+      [4, 5, 6], [4, 5, 7], [4, 6, 7], [5, 6, 7]   // Tetra2 faces
+    ];
+
+    // Projection function (3D to 2D perspective projection)
+    function project(p) {
+      const [x, y, z] = p;
+      const factor = d / (z + d);
+      return [x * factor, -y * factor]; // Invert y to align with SVG coordinates
+    }
+
+    // Rotation function around Y-axis
+    function rotateY(p, theta) {
+      const [x, y, z] = p;
+      const cos = Math.cos(theta);
+      const sin = Math.sin(theta);
+      return [
+        x * cos + z * sin,
+        y,
+        -x * sin + z * cos
+      ];
+    }
+
+    // Compute maximum radius (distance from Y-axis)
+    const r_max = Math.max(...rotatedVertices.map(v => Math.sqrt(v[0]**2 + v[2]**2)));
+    // Define maximum rotation speed in radians per second (1 rotation per second)
+    const maxRotationSpeed = 2 * Math.PI;
+
+    // Animation loop
+    let theta_y = 0;
+    let hue = 0;
+    let lastTime = performance.now();
+    let opacityPhase = 0; // Phase for opacity oscillation
+
+    // Create markers
+    const markerContainer = document.querySelector('.slider-markers');
+    
+    function fibonacci(n) {
+      if (n <= 1) return n;
+      let a = 0, b = 1;
+      for (let i = 2; i <= n; i++) {
+        [a, b] = [b, a + b];
+      }
+      return b;
+    }
+
+    // Calculate Fibonacci numbers up to 144
+    const fibNumbers = [];
+    let fib = 0;
+    let i = 0;
+    while (fib <= 144) {
+      fib = fibonacci(i);
+      if (fib <= 144) {
+        fibNumbers.push(fib);
+      }
+      i++;
+    }
+    
+    // Create markers for Fibonacci values
+    fibNumbers.forEach(fib => {
+      const marker = document.createElement('div');
+      marker.className = 'marker';
+      // Scale position to full range (0-720)
+      marker.style.left = `${(fib / 144) * 100}%`;
+      marker.setAttribute('data-value', fib);
+      if (fib === 0 || fib === 144) {
+        marker.style.height = '12px';
+        marker.style.background = 'rgba(255, 255, 255, 1)';
+      }
+      markerContainer.appendChild(marker);
+    });
+
+    function animate(timestamp) {
+      const deltaTime = (timestamp - lastTime) / 1000;
+      lastTime = timestamp;
+
+      // Get Fibonacci value from slider (0 to 144)
+      const fibValue = parseFloat(document.getElementById('speed').value);
+      
+      // Scale to actual speed (0 to 720 RPM)
+      const actualSpeed = (fibValue / 144) * 720;
+      
+      // Find closest Fibonacci number
+      const closestFib = fibNumbers.reduce((prev, curr) => {
+        return (Math.abs(curr - fibValue) < Math.abs(prev - fibValue) ? curr : prev);
+      });
+      
+      // Update Fibonacci display
+      document.getElementById('currentFib').innerHTML = `${closestFib}`;
+      document.getElementById('currentFib').style.color = `hsl(${hue}, 100%, 50%)`;
+      
+      // Convert RPM to radians per second
+      const rpmToRad = 2 * Math.PI / 60;
+      const angularSpeed = actualSpeed * rpmToRad;
+      
+      // Calculate speed as percentage of light
+      const c = 299792458;
+      const radius = 1;
+      const tangentialSpeed = (actualSpeed * 2 * Math.PI * radius) / 60;
+      const speedFraction = tangentialSpeed / c;
+      
+      // Calculate relativistic effects
+      let gamma = 1;
+      if (speedFraction < 1) {
+        gamma = 1 / Math.sqrt(1 - (speedFraction * speedFraction));
+      } else {
+        gamma = Infinity;
+      }
+      
+      theta_y += angularSpeed * deltaTime;
+      opacityPhase += deltaTime * 0.5; // Slowed down from 2 to 0.5 for gentler oscillation
+
+      // Update hue (6 degrees per second)
+      const hueSpeed = 6;
+      hue = (hue + hueSpeed * deltaTime) % 360;
+
+      // Rotate vertices around Y-axis
+      const spunVertices = rotatedVertices.map(v => rotateY(v, theta_y));
+      // Project to 2D
+      const projectedVertices = spunVertices.map(project);
+      // Update polygons
+      faces.forEach((face, i) => {
+        const points = face.map(index => projectedVertices[index].join(',')).join(' ');
+        polygons[i].setAttribute('points', points);
+        polygons[i].setAttribute('stroke', `hsl(${hue}, 100%, 50%)`);
+      });
+
+      // Update Flower of Life stroke color with oscillating opacity
+      const flowerCircles = flowerGroup.getElementsByTagName('circle');
+      for (let circle of flowerCircles) {
+        const circleX = parseFloat(circle.getAttribute('cx'));
+        const circleY = parseFloat(circle.getAttribute('cy'));
+        const distanceFromCenter = Math.sqrt(circleX * circleX + circleY * circleY);
+        const phaseOffset = distanceFromCenter / 50; // Vary phase based on distance from center
+        const opacity = 0.1 + 0.3 * Math.sin(opacityPhase + phaseOffset); // Oscillate between 0.1 and 0.4
+        circle.setAttribute('stroke', `hsla(${hue}, 100%, 50%, ${opacity})`);
+      }
+
+      // Update enclosing circle colors
+      enclosingCircle.setAttribute('stroke', `hsl(${hue}, 100%, 50%)`);
+      outerEnclosingCircle.setAttribute('stroke', `hsl(${hue}, 100%, 50%)`);
+
+      // Update speed display with actual physical values
+      const speedPercent = (speedFraction * 100).toFixed(8);
+      const gammaDisplay = gamma === Infinity ? "∞" : gamma.toFixed(2);
+      document.getElementById('speedValue').innerHTML = 
+        `v = ${speedPercent}% c | γ = ${gammaDisplay}`;
+      document.getElementById('speedValue').style.color = `hsl(${hue}, 100%, 50%)`;
+      document.getElementById('speedContainer').style.color = `hsl(${hue}, 100%, 50%)`;
+      document.getElementById('speed').style.background = '#363636';
+
+      // Update med symbol color and glow
+      const glowIntensity = 4 + Math.sin(opacityPhase) * 3; // Oscillate between 1 and 7
+      const secondaryGlow = 15 + Math.sin(opacityPhase) * 5; // Additional outer glow
+      medSymbol.style.filter = `
+        hue-rotate(${hue}deg) 
+        brightness(2.5) 
+        drop-shadow(0 0 ${glowIntensity}px hsl(${hue}, 100%, 70%))
+        drop-shadow(0 0 ${secondaryGlow}px hsl(${hue}, 100%, 50%))
+        drop-shadow(0 0 2px hsl(${hue}, 100%, 90%))
+      `;
+
+      requestAnimationFrame(animate);
+    }
+
+    // Start animation
+    animate(performance.now());
+
+    // Add smooth dragging behavior
+    const slider = document.getElementById('speed');
+    let isDragging = false;
+
+    slider.addEventListener('mousedown', () => {
+      isDragging = true;
+      slider.style.transition = 'none';
+    });
+
+    document.addEventListener('mousemove', (e) => {
+      if (!isDragging) return;
+      
+      const sliderRect = slider.getBoundingClientRect();
+      const containerRect = document.getElementById('speedContainer').getBoundingClientRect();
+      
+      // Calculate relative position in the rotated space
+      const relativeY = (containerRect.bottom - e.clientY) / containerRect.height;
+      const value = Math.max(0, Math.min(144, relativeY * 144));
+      
+      slider.value = value;
+      // Trigger input event to update animation
+      slider.dispatchEvent(new Event('input'));
+    });
+
+    document.addEventListener('mouseup', () => {
+      if (!isDragging) return;
+      isDragging = false;
+      
+      const currentValue = parseFloat(slider.value);
+      const closestFib = fibNumbers.reduce((prev, curr) => {
+        return (Math.abs(curr - currentValue) < Math.abs(prev - currentValue) ? curr : prev);
+      });
+      
+      // Only snap to Fibonacci if we're close enough (within 3 units)
+      if (Math.abs(closestFib - currentValue) < 3) {
+        slider.style.transition = 'all 0.3s ease-out';
+        slider.value = closestFib;
+        slider.dispatchEvent(new Event('input'));
+      }
+      
+      // Reset the styling to full opacity for the final value
+      document.getElementById('currentFib').style.opacity = '1';
+      if (fibNumbers.includes(Math.round(slider.value))) {
+        document.getElementById('currentFib').style.textShadow = `0 0 10px hsl(${hue}, 100%, 50%)`;
+        document.getElementById('currentFib').style.fontWeight = '700';
+      }
+    });
+
+    // Touch events for mobile
+    slider.addEventListener('touchstart', (e) => {
+      isDragging = true;
+      slider.style.transition = 'none';
+      e.preventDefault(); // Prevent scrolling
+    });
+
+    document.addEventListener('touchmove', (e) => {
+      if (!isDragging) return;
+      
+      const touch = e.touches[0];
+      const sliderRect = slider.getBoundingClientRect();
+      const containerRect = document.getElementById('speedContainer').getBoundingClientRect();
+      
+      // Calculate relative position in the rotated space
+      const relativeY = (containerRect.bottom - touch.clientY) / containerRect.height;
+      const value = Math.max(0, Math.min(144, relativeY * 144));
+      
+      slider.value = value;
+      // Trigger input event to update animation
+      slider.dispatchEvent(new Event('input'));
+      e.preventDefault(); // Prevent scrolling
+    });
+
+    document.addEventListener('touchend', () => {
+      if (!isDragging) return;
+      isDragging = false;
+      
+      const currentValue = parseFloat(slider.value);
+      const closestFib = fibNumbers.reduce((prev, curr) => {
+        return (Math.abs(curr - currentValue) < Math.abs(prev - currentValue) ? curr : prev);
+      });
+      
+      // Only snap to Fibonacci if we're close enough (within 3 units)
+      if (Math.abs(closestFib - currentValue) < 3) {
+        slider.style.transition = 'all 0.3s ease-out';
+        slider.value = closestFib;
+        slider.dispatchEvent(new Event('input'));
+      }
+      
+      // Reset the styling to full opacity for the final value
+      document.getElementById('currentFib').style.opacity = '1';
+      if (fibNumbers.includes(Math.round(slider.value))) {
+        document.getElementById('currentFib').style.textShadow = `0 0 10px hsl(${hue}, 100%, 50%)`;
+        document.getElementById('currentFib').style.fontWeight = '700';
+      }
+    });
+
+    // Update the display to show actual number while dragging
+    slider.addEventListener('input', () => {
+      const value = parseFloat(slider.value);
+      const closestFib = fibNumbers.reduce((prev, curr) => {
+        return (Math.abs(curr - value) < Math.abs(prev - value) ? curr : prev);
+      });
+      const isFib = fibNumbers.includes(Math.round(value));
+      
+      // Show the actual value while sliding, with special styling for Fibonacci numbers
+      document.getElementById('currentFib').innerHTML = `${Math.round(value)}`;
+      if (isFib) {
+        document.getElementById('currentFib').style.textShadow = `0 0 10px hsl(${hue}, 100%, 50%)`;
+        document.getElementById('currentFib').style.fontWeight = '700';
+      } else {
+        document.getElementById('currentFib').style.textShadow = 'none';
+        document.getElementById('currentFib').style.fontWeight = '400';
+        document.getElementById('currentFib').style.opacity = '0.7';
+      }
+    });
+  </script>
+</body>
+</html>
